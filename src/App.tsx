@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { detectAppMode, isDev, setDevMode } from '@/lib/host-router';
 import { ToastProvider } from '@/components/ui/Toast';
+import { TrackingProvider } from '@/components/TrackingProvider';
 
 // Layouts
 import { StorefrontLayout } from '@/layouts/StorefrontLayout';
@@ -101,6 +102,7 @@ export function App() {
   return (
     <ToastProvider>
       <BrowserRouter>
+        <TrackingProvider>
         {/* Dev Mode Switcher */}
         {isDev() && (
           <div className="fixed bottom-4 right-4 z-50 flex gap-2">
@@ -123,6 +125,7 @@ export function App() {
         
         {/* Route based on detected mode */}
         {appMode === 'admin' ? <AdminRoutes /> : <StorefrontRoutes />}
+        </TrackingProvider>
       </BrowserRouter>
     </ToastProvider>
   );

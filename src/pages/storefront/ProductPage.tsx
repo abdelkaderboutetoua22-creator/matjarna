@@ -11,6 +11,7 @@ import { useCartStore } from '@/store/cart';
 import { useToast } from '@/components/ui/Toast';
 import { supabase } from '@/lib/supabase';
 import { config } from '@/config';
+import { trackViewItem, trackAddToCart } from '@/lib/tracking';
 import type { Product, Review } from '@/types';
 
 export function ProductPage() {
@@ -53,6 +54,15 @@ export function ProductPage() {
         }
 
         setProduct(productData);
+
+        // Track view_item event
+        trackViewItem({
+          id: productData.id,
+          name: productData.name,
+          price: productData.price,
+          salePrice: productData.sale_price || undefined,
+          category: productData.category?.name,
+        });
 
         // Initialize selected options
         if (productData.options?.length > 0) {
@@ -114,6 +124,18 @@ export function ProductPage() {
     }
 
     addItem(product, quantity, selectedOptions);
+    
+    // Track add_to_cart event
+    trackAddToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      salePrice: product.sale_price || undefined,
+      category: product.category?.name,
+      quantity,
+      variant: Object.values(selectedOptions).join(' / ') || undefined,
+    });
+    
     showToast('تمت الإضافة إلى السلة', 'success');
   };
 

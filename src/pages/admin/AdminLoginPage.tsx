@@ -84,32 +84,6 @@ export function AdminLoginPage() {
         return;
       }
 
-<<<<<<< HEAD
-      // Check if user is admin (fast path)
-      // Use RPC first to avoid PostgREST singular-response edge cases (406 when 0 rows).
-      const { data: isAdmin, error: isAdminError } = await supabase.rpc('is_admin');
-
-      if (isAdminError || !isAdmin) {
-        await supabase.auth.signOut();
-        showToast('هذا الحساب غير مصرح له بالوصول', 'error');
-        setLoading(false);
-        return;
-      }
-
-      // Fetch admin profile data (should exist if is_admin() is true)
-      const { data: adminProfiles, error: profileError } = await supabase
-        .from('admin_profiles')
-        .select('*')
-        .eq('user_id', authData.user.id)
-        .limit(1);
-
-      const adminProfile = adminProfiles?.[0] ?? null;
-
-      if (profileError || !adminProfile) {
-        await supabase.auth.signOut();
-        showToast('تعذر تحميل ملف المسؤول. تأكد من إضافة المستخدم إلى admin_profiles', 'error');
-        setLoading(false);
-=======
       // Fetch admin profile using RPC that bypasses RLS (SECURITY DEFINER)
       const { data: profileRows, error: profileError } = await supabase.rpc('get_my_admin_profile');
       
@@ -133,7 +107,6 @@ export function AdminLoginPage() {
           email: authData.user.email || email,
         });
         showToast('هذا الحساب غير مُضاف كمسؤول. أضِفه إلى جدول admin_profiles في Supabase.', 'error');
->>>>>>> 5fc3d7e (Initial commit: Matjarna e-commerce)
         return;
       }
 
