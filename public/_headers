@@ -4,5 +4,10 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
 
-/assets/*
-  Cache-Control: public, max-age=31536000, immutable
+# لأن build يستخدم singlefile (JS/CSS داخل index.html)،
+# من المهم عدم تخزين index.html بكاش طويل حتى لا ترى نسخة قديمة بعد Deploy.
+/index.html
+  Cache-Control: no-store
+
+/*
+  Cache-Control: no-cache

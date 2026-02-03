@@ -106,3 +106,6 @@ export const orderStatuses = [
   { value: 'cancelled', label: 'ملغي', color: 'bg-red-100 text-red-800' },
   { value: 'returned', label: 'مرتجع', color: 'bg-gray-100 text-gray-800' },
 ] as const;
+
+// Alias for backward compatibility
+export const algerianWilayas = wilayas;

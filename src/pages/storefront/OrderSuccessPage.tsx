@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { CheckCircle, Home, Phone, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { UpsellWidget } from '@/components/storefront/UpsellWidget';
 import { config } from '@/config';
 
 export function OrderSuccessPage() {
@@ -65,6 +66,9 @@ export function OrderSuccessPage() {
             <span dir="ltr">{config.store.phone}</span>
           </a>
         </div>
+
+        {/* Upsell Offers */}
+        <UpsellWidget location="order_success" />
 
         {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
