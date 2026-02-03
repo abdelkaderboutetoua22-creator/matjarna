@@ -27,6 +27,8 @@ import { CouponsPage } from '@/pages/admin/CouponsPage';
 import { ReviewsPage } from '@/pages/admin/ReviewsPage';
 import { AbandonedCartsPage } from '@/pages/admin/AbandonedCartsPage';
 import { SettingsPage } from '@/pages/admin/SettingsPage';
+import { UpsellPage } from '@/pages/admin/UpsellPage';
+import { AnalyticsPage } from '@/pages/admin/AnalyticsPage';
 
 // Auth Guard
 import { useAuthStore } from '@/store/auth';
@@ -84,6 +86,8 @@ function AdminRoutes() {
         <Route path="coupons" element={<CouponsPage />} />
         <Route path="reviews" element={<ReviewsPage />} />
         <Route path="abandoned-carts" element={<AbandonedCartsPage />} />
+        <Route path="upsell" element={<UpsellPage />} />
+        <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
