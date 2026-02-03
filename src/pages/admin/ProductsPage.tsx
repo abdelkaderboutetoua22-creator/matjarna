@@ -7,8 +7,18 @@ import { Input } from '@/components/ui/Input';
 import { Loader } from '@/components/ui/Loader';
 import { Badge } from '@/components/ui/Badge';
 import { useToast } from '@/components/ui/Toast';
+import { ImageUploader } from '@/components/admin/ImageUploader';
 import { supabase } from '@/lib/supabase';
 import { config } from '@/config';
+
+interface ProductImage {
+  id: string;
+  product_id: string;
+  image_url: string;
+  cf_image_id: string | null;
+  position: number;
+  is_primary: boolean;
+}
 
 export function AdminProductsPage() {
   const { showToast } = useToast();
@@ -165,6 +175,8 @@ export function AdminProductsPage() {
 function ProductForm({ product, categories, onClose, onSuccess }: any) {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [savedProductId, setSavedProductId] = useState<string | null>(product?.id || null);
+  const [images, setImages] = useState<ProductImage[]>(product?.images || []);
   const [formData, setFormData] = useState({
     name: product?.name || '',
     slug: product?.slug || '',
@@ -201,17 +213,33 @@ function ProductForm({ product, categories, onClose, onSuccess }: any) {
     };
 
     let error;
+    let newProductId: string | null = null;
+
     if (product) {
       ({ error } = await supabase.from('products').update(data).eq('id', product.id));
     } else {
-      ({ error } = await supabase.from('products').insert(data));
+      const { data: insertedData, error: insertError } = await supabase
+        .from('products')
+        .insert(data)
+        .select('id')
+        .single();
+      error = insertError;
+      newProductId = insertedData?.id || null;
     }
 
     if (error) {
       showToast('حدث خطأ أثناء الحفظ', 'error');
     } else {
       showToast(product ? 'تم تحديث المنتج بنجاح' : 'تم إضافة المنتج بنجاح', 'success');
-      onSuccess();
+      
+      // If new product was created, update savedProductId to allow image upload
+      if (newProductId) {
+        setSavedProductId(newProductId);
+        // Don't close modal - let user upload images
+        showToast('يمكنك الآن رفع صور للمنتج', 'info');
+      } else {
+        onSuccess();
+      }
     }
     setLoading(false);
   };
@@ -307,6 +335,24 @@ function ProductForm({ product, categories, onClose, onSuccess }: any) {
           نشر المنتج
         </label>
       </div>
+
+      {/* Image Uploader - only show if product is saved */}
+      {savedProductId && (
+        <div className="border-t pt-4 mt-4">
+          <ImageUploader
+            productId={savedProductId}
+            images={images}
+            onImagesChange={setImages}
+            disabled={loading}
+          />
+        </div>
+      )}
+
+      {!savedProductId && (
+        <p className="text-sm text-amber-600 bg-amber-50 p-3 rounded-lg">
+          💡 احفظ المنتج أولاً لتتمكن من رفع الصور
+        </p>
+      )}
 
       <div className="flex gap-3 pt-4">
         <Button type="submit" isLoading={loading}>
