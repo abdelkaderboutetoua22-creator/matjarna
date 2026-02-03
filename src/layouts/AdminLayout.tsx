@@ -13,7 +13,9 @@ import {
   LogOut,
   Menu,
   X,
-  ChevronLeft
+  ChevronLeft,
+  Target,
+  BarChart3
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth';
 import { cn } from '@/utils/cn';
@@ -27,6 +29,8 @@ const navItems = [
   { path: '/dashboard/coupons', label: 'الكوبونات', icon: Tag },
   { path: '/dashboard/reviews', label: 'التقييمات', icon: Star },
   { path: '/dashboard/abandoned-carts', label: 'السلات المتروكة', icon: ShoppingBag },
+  { path: '/dashboard/upsell', label: 'العروض والبيع المتقاطع', icon: Target },
+  { path: '/dashboard/analytics', label: 'التحليلات', icon: BarChart3 },
   { path: '/dashboard/settings', label: 'الإعدادات', icon: Settings },
 ];
 
