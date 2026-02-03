@@ -266,15 +266,25 @@ CREATE TABLE banners (
 CREATE TABLE upsell_rules (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
+  type TEXT NOT NULL DEFAULT 'upsell' CHECK (type IN ('upsell', 'downsell', 'cross_sell')),
   trigger_type TEXT NOT NULL CHECK (trigger_type IN ('product', 'category', 'cart_total')),
-  trigger_ids UUID[] DEFAULT '{}',
-  trigger_min_total DECIMAL(10,2),
-  product_ids UUID[] NOT NULL,
-  display_location TEXT NOT NULL CHECK (display_location IN ('product_page', 'checkout', 'both')),
+  trigger_id UUID,
+  trigger_min_amount DECIMAL(10,2),
+  target_product_ids UUID[] DEFAULT '{}',
+  display_location TEXT NOT NULL CHECK (display_location IN ('product_page', 'cart', 'checkout', 'order_success')),
+  discount_percent DECIMAL(5,2),
+  message_ar TEXT,
   is_active BOOLEAN DEFAULT true,
+  priority INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+CREATE INDEX idx_upsell_rules_active ON upsell_rules(is_active);
+CREATE INDEX idx_upsell_rules_priority ON upsell_rules(priority);
+
+-- Add trigger for updated_at
+CREATE TRIGGER update_upsell_rules_updated_at BEFORE UPDATE ON upsell_rules FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 -- ============================================
 -- STORE SETTINGS (single row table)
